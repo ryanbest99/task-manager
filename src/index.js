@@ -2,10 +2,117 @@ const express = require("express");
 require("./db/mongoose");
 const User = require("./models/user");
 const Task = require("./models/task");
+const Phone = require("./models/phone");
 
 const app = express();
 
 app.use(express.json());
+
+// Phones
+app.post("/phones", async (req, res) => {
+  const newPhone = new Phone(req.body);
+
+  try {
+    const phone = await newPhone.save();
+    res.status(200).send(phone);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+
+  //   newPhone
+  //     .save()
+  //     .then((newPhone) => {
+  //       console.log(newPhone);
+  //       res.status(200).send(newPhone);
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send(err);
+  //     });
+});
+
+app.get("/phones", async (req, res) => {
+  try {
+    const phones = await Phone.find({});
+    console.log(phones);
+    res.send(phones);
+  } catch (err) {
+    res.status(500).send();
+  }
+
+  //   const phones = Phone.find({})
+  //     .then((phones) => {
+  //       console.log(phones);
+  //       res.status(201).send(phones);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       res.status(500).send();
+  //     });
+});
+
+app.get("/phones/:id", async (req, res) => {
+  try {
+    const phone = await Phone.findById(req.params.id);
+
+    if (!phone) {
+      return res.status(404).send();
+    }
+
+    res.send(phone);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+
+  //   Phone.findById(req.params.id)
+  //     .then((phone) => {
+  //       if (!phone) {
+  //         return res.status(404).send();
+  //       }
+  //       res.status(200).send(phone);
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send();
+  //     });
+});
+
+app.patch("/phones/:id", async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["brand", "model"];
+  const isValidOperation = updates.every((update) => {
+    allowedUpdates.includes(update);
+  });
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "Invalid Updates" });
+  }
+
+  try {
+    const phone = await Phone.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    );
+
+    if (!phone) {
+      return res.status(404).send();
+    }
+
+    res.send(phone);
+  } catch (err) {
+    res.status(400).send();
+  }
+
+  //   Phone.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
+  //     .then((phone) => {
+  //       if (!phone) {
+  //         return res.status(404).send();
+  //       }
+  //       res.send(phone);
+  //     })
+  //     .catch((err) => {
+  //       res.status(400).send(err);
+  //     });
+});
 
 // Users
 app.post("/users", async (req, res) => {
@@ -76,6 +183,16 @@ app.get("/users/:id", async (req, res) => {
 });
 
 app.patch("/users/:id", async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["name", "email", "password"];
+  const isValidOperation = updates.every((update) => {
+    allowedUpdates.includes(update);
+  });
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "Invalid Updates" });
+  }
+
   try {
     const user = await User.findByIdAndUpdate(
       req.params.id,
@@ -176,6 +293,16 @@ app.get("/tasks/:id", async (req, res) => {
 });
 
 app.patch("/tasks/:id", async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["description", "completed"];
+  const isValidOperation = updates.every((update) => {
+    allowedUpdates.includes(update);
+  });
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "Invalid Updates" });
+  }
+
   try {
     const task = await Task.findByIdAndUpdate(
       req.params.id,
