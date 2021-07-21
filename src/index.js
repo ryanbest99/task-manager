@@ -225,6 +225,31 @@ app.patch("/users/:id", async (req, res) => {
   //     });
 });
 
+app.delete("/users/:id", async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).send();
+    }
+
+    res.send(user);
+  } catch (err) {
+    res.status(500).send();
+  }
+
+  //   User.findByIdAndDelete(req.params.id)
+  //     .then((user) => {
+  //       if (!user) {
+  //         res.status(404).send();
+  //       }
+
+  //       res.send(user);
+  //     })
+  //     .catch((err) => {
+  //       res.status(400).send();
+  //     });
+});
+
 // Tasks
 app.post("/tasks", async (req, res) => {
   const newTask = new Task(req.body);
@@ -332,6 +357,30 @@ app.patch("/tasks/:id", async (req, res) => {
   //     })
   //     .catch((err) => {
   //       res.status(400).send(err);
+  //     });
+});
+
+app.delete("/tasks/:id", async (req, res) => {
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+    if (!task) {
+      return res.status(404).send();
+    }
+    res.send(task);
+  } catch (err) {
+    res.status(400).send();
+  }
+
+  //   Task.findByIdAndDelete(req.params.id)
+  //     .then((task) => {
+  //       if (!task) {
+  //         return res.status(404).send();
+  //       }
+
+  //       res.send(task);
+  //     })
+  //     .catch((err) => {
+  //       res.status(400).send();
   //     });
 });
 
