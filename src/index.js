@@ -7,6 +7,7 @@ const app = express();
 
 app.use(express.json());
 
+// Users
 app.post("/users", async (req, res) => {
   const user = new User(req.body);
 
@@ -74,6 +75,40 @@ app.get("/users/:id", async (req, res) => {
   //     });
 });
 
+app.patch("/users/:id", async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).send();
+    }
+
+    res.send(user);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+
+  //   const user = User.findByIdAndUpdate(
+  //     req.params.id,
+  //     { $set: req.body },
+  //     { new: true, runValidators: true }
+  //   )
+  //     .then((user) => {
+  //       if (!user) {
+  //         return res.status(404).send();
+  //       }
+  //       res.send(user);
+  //     })
+  //     .catch((err) => {
+  //       res.status(400).send(err);
+  //     });
+});
+
+// Tasks
 app.post("/tasks", async (req, res) => {
   const newTask = new Task(req.body);
 
@@ -137,6 +172,39 @@ app.get("/tasks/:id", async (req, res) => {
   //     .catch((err) => {
   //       console.log(err);
   //       res.status(500).send();
+  //     });
+});
+
+app.patch("/tasks/:id", async (req, res) => {
+  try {
+    const task = await Task.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true, runValidatros: true }
+    );
+
+    if (!task) {
+      return res.status(404).send();
+    }
+
+    res.send(task);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+
+  //   const task = Task.findByIdAndUpdate(
+  //     req.params.id,
+  //     { $set: req.body },
+  //     { new: true, runValidators: true }
+  //   )
+  //     .then((task) => {
+  //       if (!task) {
+  //         return res.status(404).send();
+  //       }
+  //       res.send(task);
+  //     })
+  //     .catch((err) => {
+  //       res.status(400).send(err);
   //     });
 });
 
