@@ -2,96 +2,142 @@ const express = require("express");
 require("./db/mongoose");
 const User = require("./models/user");
 const Task = require("./models/task");
-const Movie = require("./models/movie");
-const Paper = require("./models/paper");
-const Cellphone = require("./models/cellphone");
-const Book = require("./models/book");
 
 const app = express();
 
 app.use(express.json());
 
-app.post("/users", (req, res) => {
+app.post("/users", async (req, res) => {
   const user = new User(req.body);
 
-  user
-    .save()
-    .then(() => {
-      console.log(user);
-      res.send(user);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).send(err);
-    });
+  try {
+    await user.save();
+    res.status(201).send(user);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+
+  //   user
+  //     .save()
+  //     .then(() => {
+  //       console.log(user);
+  //       res.send(user);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       res.status(400).send(err);
+  //     });
 });
 
-app.post("/tasks", (req, res) => {
-  const task = new Task(req.body);
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.send(users);
+  } catch (err) {
+    res.status(500).send();
+  }
 
-  task
-    .save()
-    .then(() => {
-      console.log(task);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  //   User.find({})
+  //     .then((users) => {
+  //       res.send(users);
+  //       console.log(users);
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send();
+  //     });
 });
 
-app.post("/movies", (req, res) => {
-  const movie = new Movie(req.body);
+app.get("/users/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.send(user);
+    console.log(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send();
+  }
 
-  movie
-    .save()
-    .then(() => {
-      console.log(movie);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  //   User.findById(req.params.id)
+  //     .then((user) => {
+  //       if (!user) {
+  //         return res.status(404).send();
+  //       }
+  //       res.send(user);
+  //       console.log(user);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       res.status(500).send();
+  //     });
 });
 
-app.post("/papers", (req, res) => {
-  const paper = new Paper(req.body);
+app.post("/tasks", async (req, res) => {
+  const newTask = new Task(req.body);
 
-  paper
-    .save()
-    .then(() => {
-      console.log(paper);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  try {
+    const task = await newTask.save();
+    console.log(task);
+    res.status(201).send(task);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send();
+  }
+
+  //   task
+  //     .save()
+  //     .then(() => {
+  //       console.log(task);
+  //       res.status(201).send(task);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
 });
 
-app.post("/cellphones", (req, res) => {
-  const cellphone = new Cellphone(req.body);
-  cellphone
-    .save()
-    .then(() => {
-      console.log(cellphone);
-      res.status(200).send(cellphone);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).send(err);
-    });
+app.get("/tasks", async (req, res) => {
+  try {
+    const tasks = await Task.find({});
+    res.send(tasks);
+  } catch (err) {
+    res.status(500).send();
+  }
+
+  //   Task.find({})
+  //     .then((tasks) => {
+  //       res.send(tasks);
+  //       console.log(tasks);
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send();
+  //     });
 });
 
-app.post("/books", (req, res) => {
-  const book = new Book(req.body);
+app.get("/tasks/:id", async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).send();
+    }
+    res.send(task);
+  } catch (err) {
+    res.status(500).send();
+  }
 
-  book
-    .save()
-    .then(() => {
-      console.log(book);
-      res.status(200).send(book);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).send(err);
-    });
+  //   Task.findById(req.params.id)
+  //     .then((task) => {
+  //       if (!task) {
+  //         return res.status(404).send();
+  //       }
+  //       res.send(task);
+  //       console.log(task);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       res.status(500).send();
+  //     });
 });
 
 const port = process.env.PORT || 5000;
