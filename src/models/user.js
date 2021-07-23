@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcryptjs");
 
-const User = mongoose.model("User", {
+const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -9,6 +10,7 @@ const User = mongoose.model("User", {
   },
   email: {
     type: String,
+    unique: true,
     required: true,
     trim: true,
     lowercase: true,
@@ -32,19 +34,33 @@ const User = mongoose.model("User", {
   },
 });
 
+UserSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new Error("Unable to Login");
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    throw new Error("Unable to Login");
+  }
+
+  return user;
+};
+
+// Hash the plain text password
+UserSchema.pre("save", async function (next) {
+  const user = this;
+
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 10);
+  }
+
+  next();
+});
+
+const User = mongoose.model("User", UserSchema);
+
 module.exports = User;
-
-// const minsu = new User({
-//   name: "minsu",
-//   email: "asdf@asd.com",
-//   password: "Password1",
-// });
-
-// minsu
-//   .save()
-//   .then(() => {
-//     console.log(minsu);
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
