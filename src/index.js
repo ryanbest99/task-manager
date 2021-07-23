@@ -4,6 +4,7 @@ const Phone = require("./models/phone");
 const userRouter = require("./routers/users");
 const taskRouter = require("./routers/tasks");
 const vehicleRouter = require("./routers/vehicles");
+const luxuryRouter = require("./routers/luxuries");
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 app.use(userRouter);
 app.use(taskRouter);
 app.use(vehicleRouter);
+app.use(luxuryRouter);
 
 // Phones
 app.post("/phones", async (req, res) => {
@@ -123,3 +125,30 @@ const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+// bcrypt practice
+
+const bcrypt = require("bcryptjs");
+
+const encryption = async () => {
+  const password = "123456";
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  console.log("password:", password);
+  console.log("hashedPassword:", hashedPassword);
+};
+
+encryption();
+
+// const myFunction = async () => {
+//   const password = "123456";
+//   const hashedPassword = await bcrypt.hash(password, 10);
+
+//   console.log(password);
+//   console.log(hashedPassword);
+
+//   const isMatch = await bcrypt.compare(password, hashedPassword);
+//   console.log(isMatch);
+// };
+
+// myFunction();
