@@ -136,6 +136,9 @@ const encryption = async () => {
 
   console.log("password:", password);
   console.log("hashedPassword:", hashedPassword);
+
+  const isMatch = await bcrypt.compare(password, hashedPassword);
+  console.log(isMatch);
 };
 
 encryption();
