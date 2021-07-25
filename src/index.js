@@ -155,3 +155,18 @@ encryption();
 // };
 
 // myFunction();
+
+// JWT Practice
+
+const jwt = require("jsonwebtoken");
+
+const jwtFunction = async () => {
+  const token = jwt.sign({ data: "abc123" }, "helloworld", { expiresIn: "1s" });
+  console.log("token:", token);
+
+  // verify a token symmetric - synchronous
+  var decoded = jwt.verify(token, "helloworld");
+  console.log("data: ", decoded.data); // bar
+};
+
+jwtFunction();
