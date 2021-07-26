@@ -8,9 +8,9 @@ const luxuryRouter = require("./routers/luxuries");
 
 const app = express();
 
-app.use((req, res, next) => {
-  res.status(503).send("The Server is currently under maintanance");
-});
+// app.use((req, res, next) => {
+//   res.status(503).send("The Server is currently under maintanance");
+// });
 
 // app.use((req, res, next) => {
 //   if (req.method === "GET") {
